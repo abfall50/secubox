@@ -1,0 +1,101 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider          = "mongodb"
+  url               = env("DATABASE_URL")
+}
+
+model Account {
+  id                String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.String
+  access_token      String? @db.String
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.String
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  phoneNumber   String
+  password      String
+  image         String?
+  status        String
+  id_secu       String?   @unique
+  connected     Boolean   @default(false)
+  connectedTo   String    @default("")
+  accounts      Account[]
+  sessions      Session[]
+}
+
+model Secubox {
+  ID   String @id @default(auto()) @map("_id") @db.ObjectId
+  id   String @unique
+  code String
+}
+
+model Company {
+  id               String  @id @default(auto()) @map("_id") @db.ObjectId
+  id_user          String
+  id_secubox       String  @unique
+  name             String  @unique
+  welcome_msg      String  @default("Test default message db")
+  fidelity_msg     String? @default("Profitez de l'offre au bout de 10 points!")
+  fidelity_img     String?
+  fidelity_admin   Boolean @default(true)
+  fidelity_company Boolean @default(true)
+  image            String? @default("/sx.png")
+  menu             String?
+  reviews          String?
+  ssid_company     String  @default("")
+  password_ssid1   String  @default("")
+  ssid_client      String  @default("")
+  password_ssid2   String  @default("")
+
+  fidelity Fidelity[]
+}
+
+model Fidelity {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  id_user         String
+  id_company      String   @default("")
+  count           Int      @default(0)
+  claim           Boolean  @default(false)
+  connected       Boolean  @default(false)
+  last_connection DateTime @default(now())
+
+  company Company @relation(fields: [id_company], references: [id])
+}
+
+model VerificationToken {
+  identifier String   @id @default(auto()) @map("_id") @db.ObjectId
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}

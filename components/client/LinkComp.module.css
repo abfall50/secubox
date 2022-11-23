@@ -1,0 +1,41 @@
+/* From uiverse.io by @alexmaracinaru */
+.cta {
+	position: relative;
+	margin: auto;
+	padding: 12px 18px;
+	transition: all 0.2s ease;
+	border: none;
+ 	border-radius: 50px;
+ 	background: rgb(234 179 8);
+	width: 60%;
+	height: 50%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	cursor: pointer;
+   }
+   
+
+   
+   .cta span {
+	position: relative;
+	font-family: "Ubuntu", sans-serif;
+	font-size: 30px;
+	font-weight: 700;
+	letter-spacing: 0.05em;
+	color: black;
+   }
+   
+   .cta svg {
+	margin-left: 10px;
+	transform: translateX(-5px);
+	transition: all 0.3s ease;
+   }
+   
+   .cta:hover svg {
+	transform: translateX(0);
+   }
+   
+   .cta:active {
+	transform: scale(0.95);
+   }
